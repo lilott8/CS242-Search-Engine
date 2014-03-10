@@ -1,11 +1,11 @@
-import org.apache.lucene.document.Field;
+package edu.cs236.lucene;
+
 import org.apache.lucene.index.Terms;
 import org.apache.lucene.search.spans.Spans;
 
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Random;
-import java.util.TreeMap;
 
 /**
  * Created by jason on 3/7/14.

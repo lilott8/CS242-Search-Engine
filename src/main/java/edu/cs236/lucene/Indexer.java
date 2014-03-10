@@ -1,10 +1,15 @@
+package edu.cs236.lucene;
+
+import org.apache.lucene.analysis.core.StopAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.analysis.util.StopwordAnalyzerBase;
 import org.apache.lucene.document.*;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.store.NIOFSDirectory;
 import org.apache.lucene.util.Version;
 
 import java.io.File;
@@ -23,7 +28,7 @@ public class Indexer {
     private ArrayList<String> flags;
     private IndexWriter writer;
     private Connection connection;
-    private Directory directory;
+    //private Directory directory;
     private IndexWriterConfig conf;
     private StandardAnalyzer analyzer;
     private FieldType fieldType;
@@ -34,22 +39,28 @@ public class Indexer {
         this.loadDefaults();
     }
 
+    public Indexer(String directory) throws IOException {
+        //this.directory = FSDirectory.open(new File(directory));
+        this.loadDefaults();
+    }
+
     public Indexer(ArrayList<String> f, String path) throws IOException{
         this.flags = f;
-        this.directory = FSDirectory.open(new File(path));
+        //this.directory = FSDirectory.open(new File(path));
         this.loadDefaults();
     }
 
     public Indexer(String path, String db, String server, String user, String pw) throws Exception{
-        this.directory = FSDirectory.open(new File(path));
-        //this.openConnection(server, db, user, pw);
+        //this.directory = FSDirectory.open(new File(path));
+        this.openConnection(server, db, user, pw);
         this.loadDefaults();
     }
 
     public void loadDefaults() throws IOException{
         this.analyzer = new StandardAnalyzer(Version.LUCENE_40);
         this.conf = new IndexWriterConfig(Version.LUCENE_40, analyzer);
-        this.writer = new IndexWriter(this.directory, this.conf);
+        //this.writer = new IndexWriter(this.directory, this.conf);
+        this.writer = new IndexWriter(Controller.LuceneController.getDirectory(), this.conf);
         //Store both position and offset information
         this.fieldType = new FieldType();
         this.fieldType.setStoreTermVectors(true);
@@ -62,8 +73,8 @@ public class Indexer {
 
     private void openConnection(String server, String db, String u, String p) throws Exception {
         Class.forName("com.mysql.jdbc.Driver").newInstance();
-        String connection = String.format("jdbc:mysql://%s:3306/%s", server, db);
-        this.connection = DriverManager.getConnection(connection, u, p);
+        String conn = String.format("jdbc:mysql://%s:3306/%s", server, db);
+        this.connection = DriverManager.getConnection(conn, u, p);
         this.connection.createStatement();
     }
 

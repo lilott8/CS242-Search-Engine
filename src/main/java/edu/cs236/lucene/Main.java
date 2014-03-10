@@ -1,3 +1,4 @@
+package edu.cs236.lucene;
 import org.apache.lucene.queryparser.classic.ParseException;
 
 import java.io.File;
@@ -9,9 +10,29 @@ import java.util.*;
  */
 public class Main {
 
+    public static ArrayList<LuceneResult> results = new ArrayList<LuceneResult>();
+
+    public static final int pageSize = 10;
+
+    public static void searchFor(String query) throws Exception {
+        Controller controller = new Controller();
+        controller.createSearcher();
+        controller.query(query, new ArrayList<String>());
+        results = controller.getResults();
+        controller.closeIndexer();
+    }
+
+    public static ArrayList<String> printPagatedResults(int pageNumber) {
+        ArrayList<String> r= new ArrayList<String>();
+        for(int x = pageSize * pageNumber; x<(pageSize * pageNumber) + pageSize;x++){
+            r.add(results.get(x).getHtml());
+        }
+        return r;
+    }
+
     public static void main(String[] args) throws Exception {
         HashMap<String, String> arguments = parseArgs(args);
-        Controller controller = new Controller(arguments);
+        Controller controller = new Controller(arguments, true, true);
 
         String input;
         String query = "";
@@ -38,7 +59,7 @@ public class Main {
                 }
                 //controller.closeSearcher();
                 //controller.printSearchResults();
-            } /*else if(command.equalsIgnoreCase("index")) {
+            } else if(command.equalsIgnoreCase("index")) {
                 // example: index -body -url -title
                 if(eval.size() > 0) {
                     controller.indexOn(eval);
@@ -47,7 +68,7 @@ public class Main {
                     controller.indexOn(eval);
                 }
                 //controller.closeIndexer();
-            }*/ else if(command.equalsIgnoreCase("quit") || command.equalsIgnoreCase("exit")) {
+            } else if(command.equalsIgnoreCase("quit") || command.equalsIgnoreCase("exit")) {
                 acceptInput = false;
             } else {
                 System.out.println("Invalid command");
@@ -64,6 +85,7 @@ public class Main {
     public static HashMap<String, String> parseArgs(String[] args) {
         HashMap<String, String> arguments = new HashMap<String, String>();
         HashMap<String, String> defaults = new HashMap<String, String>();
+        //defaults.put("ll", "/media/database/lucene");
         defaults.put("ll", "/Volumes/Virtual Machines/lucene");
         defaults.put("un", "root");
         defaults.put("pw", "root");

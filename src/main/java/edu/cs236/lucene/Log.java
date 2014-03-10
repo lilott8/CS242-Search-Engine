@@ -1,3 +1,5 @@
+package edu.cs236.lucene;
+
 /**
  * Created by jason on 2/3/14.
  */

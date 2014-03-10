@@ -1,3 +1,7 @@
+package edu.cs236.lucene;
+
+import edu.cs236.lucene.Controller;
+import edu.cs236.lucene.LuceneResult;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.*;
@@ -17,6 +21,7 @@ import java.util.*;
  */
 public class SpanSearch {
 
+    public String TAG = "spansearch";
     private SpanQuery query;
     private TopScoreDocCollector collector;
     protected Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_40);
@@ -39,32 +44,34 @@ public class SpanSearch {
     }
 
     public void setQuery(String queryString, ArrayList<String> fields) {
+        Log.d(TAG, queryString, 1);
+        this.results.clear();
         this.query = new SpanTermQuery(new Term("body", queryString));
     }
 
     public void search() throws IOException{
         TopDocs results = this.searcher.search(this.query, Controller.LuceneController.hitsPerPage);
-        System.out.println("Length: " + results.scoreDocs.length);
+        //System.out.println("Length: " + results.scoreDocs.length);
         /**
          * Get the list of docIDs and LuceneResult
          */
         int x=0;
         for(ScoreDoc s : results.scoreDocs) {
             //this.results.put(s.doc, new LuceneResult(s.doc, s.score));
-            System.out.println("added a new result");
+            //System.out.println("added a new result");
             this.results.add(new LuceneResult(s.doc, s.score));
-            this.loadQueryResults(x);
+            this.loadQueryResults(x, s.doc);
             //this.results.add(this.results.get(s.doc));
             x++;
         }
         this.sortResults();
     }
 
-    private void loadQueryResults(int doc) throws IOException {
-        String url = this.reader.document(doc).get("url");
-        this.results.get(doc).setUrl(url);
-        this.results.get(doc).setTerms(this.reader.getTermVector(doc, "body"));
-        this.generateSnippets(doc);
+    private void loadQueryResults(int locInArray, int docId) throws IOException {
+        String url = this.reader.document(docId).get("url");
+        this.results.get(locInArray).setUrl(url);
+        this.results.get(locInArray).setTerms(this.reader.getTermVector(docId, "body"));
+        this.generateSnippets(locInArray);
         //this.results.get(doc).printTree();
     }
 
