@@ -41,6 +41,7 @@ public class Main {
         boolean acceptInput = true;
 
         do{
+            System.out.flush();
             System.out.print("Enter your command: ");
             input = scanner.nextLine();
             eval = new ArrayList<String>(Arrays.asList(input.split(" ")));
@@ -73,11 +74,19 @@ public class Main {
             } else {
                 System.out.println("Invalid command");
             }
-            System.out.flush();
+
         } while(acceptInput);
 
+        try {
         controller.closeSearcher();
+        } catch(Exception e) {
+            Log.d("main", "error closing searcher", 1);
+        }
+        try {
         controller.closeIndexer();
+        } catch(Exception e) {
+            Log.d("main", "error closing indexer", 1);
+        }
 
         System.out.println("Thanks for searching!");
     }

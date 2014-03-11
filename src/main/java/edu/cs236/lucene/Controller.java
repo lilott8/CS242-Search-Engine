@@ -19,7 +19,7 @@ public class Controller {
         Instance;
         private static DirectoryReader reader;
         public static final int hitsPerPage = 10;
-        public static final int window = 7;
+        public static final int window = 10;
         public static final int snippetSize = 4;
         private static Directory directory;
         public static void openIndex(String path) throws IOException {
@@ -56,7 +56,7 @@ public class Controller {
         /**
          * TODO: Change this for production
          */
-        //this.directory = "/media/database/lucene";
+        this.directory = "/media/database/lucene";
         //this.directory = "/Volumes/Virtual Machines/lucene";
         LuceneController.openIndex(this.directory);
     }
@@ -67,10 +67,10 @@ public class Controller {
             LuceneController.openDirectory(args.get("ll"));
             this.indexer = new Indexer(args.get("ll"), args.get("db"),
                 args.get("server"), args.get("un"), args.get("pw"));
-        }
+        }// end if
         if(s) {
             LuceneController.openIndex(this.directory);
-        }
+        }// end if
     }
 
     public void createSearcher() throws Exception {
@@ -79,7 +79,7 @@ public class Controller {
     }
 
     public void indexOn(ArrayList<String> fields) throws Exception {
-        this.indexer = new Indexer(this.directory);
+        //this.indexer = new Indexer(this.directory);
 
         this.indexer.setFlags(fields);
         // Max rows = 28017

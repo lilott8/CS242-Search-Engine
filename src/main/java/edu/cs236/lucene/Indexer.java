@@ -87,11 +87,26 @@ public class Indexer {
         while(result.next()) {
             Document d = new Document();
             // d.add(new IntField("id", result.getInt("ID"), Field.Store.NO));
-            d.add(new TextField("id", result.getString("id"), Field.Store.NO));
-            d.add(new Field("body", result.getString("body"), this.fieldType));
-            d.add(new Field("url", result.getString("url"), this.fieldType));
-            d.add(new Field("title", result.getString("title"), this.fieldType));
-            // d.add(new Field("raw", result.getString("raw"), Field.Store.YES, Field.Index.ANALYZED));
+            Field id = new IntField("id", result.getInt("id"), Field.Store.NO);
+            d.add(id);
+
+            Field body = new Field("body", result.getString("body"), this.fieldType);
+            body.setBoost((float)1.0);
+            d.add(body);
+
+            Field url = new Field("url", result.getString("url"), this.fieldType);
+            url.setBoost((float)1.5);
+            d.add(url);
+
+            Field title = new Field("title", result.getString("title"), this.fieldType);
+            title.setBoost((float)2.0);
+            d.add(title);
+
+            //d.add(new TextField("id", result.getString("id"), Field.Store.NO));
+            //d.add(new Field("body", result.getString("body"), this.fieldType));
+            //d.add(new Field("url", result.getString("url"), this.fieldType));
+            //d.add(new Field("title", result.getString("title"), this.fieldType));
+
             /* for(String s : this.flags) {
                 d.add(new Field(s, result.getString(s), Field.Store.YES, Field.Index.ANALYZED));
             } */
@@ -114,6 +129,7 @@ public class Indexer {
 
     public void closeWriter() throws IOException{
         this.writer.close();
+        Controller.LuceneController.closeDirectory();
     }
     public void closeDb() throws SQLException {
         this.connection.close();

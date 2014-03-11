@@ -18,7 +18,7 @@ public class IndexSearch {
 
     private Query query;
     private TopScoreDocCollector collector;
-    protected Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_40);
+    protected Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_40, StandardAnalyzer.STOP_WORDS_SET);
     private IndexReader reader;
     private IndexSearcher searcher;
     private ScoreDoc[] scoreDoc;
