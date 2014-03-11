@@ -61,6 +61,11 @@ public class Controller {
         LuceneController.openIndex(this.directory);
     }
 
+    public Controller (String dir) throws IOException {
+        this.directory = dir;
+        LuceneController.openIndex(this.directory);
+    }
+
     public Controller(HashMap<String, String> args, boolean i, boolean s) throws Exception {
         this.directory = args.get("ll");
         if(i) {
@@ -99,6 +104,9 @@ public class Controller {
         if(bIndex) {
             this.index.setQuery(query, args);
             this.index.search();
+            for(LuceneResult entry : this.index.getResults()) {
+
+            }
         }
 
         if(bSpan) {

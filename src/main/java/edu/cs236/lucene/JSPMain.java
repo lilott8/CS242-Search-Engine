@@ -13,9 +13,16 @@ public class JSPMain {
     public ArrayList<LuceneResult> results = new ArrayList<LuceneResult>();
     public Controller controller;
 
-
     public JSPMain(String query) throws Exception {
         this.controller = new Controller();
+        this.controller.createSearcher();
+
+        this.controller.query(query, null);
+        results = this.controller.getResults();
+    }
+
+    public JSPMain(String query, String dir) throws Exception {
+        this.controller = new Controller(dir);
         this.controller.createSearcher();
 
         this.controller.query(query, null);

@@ -10,6 +10,7 @@ import org.apache.lucene.util.Version;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Created by jason on 3/6/14.
@@ -22,6 +23,8 @@ public class IndexSearch {
     private IndexReader reader;
     private IndexSearcher searcher;
     private ScoreDoc[] scoreDoc;
+
+    private ArrayList<LuceneResult> results = new ArrayList<LuceneResult>();
 
     public IndexSearch() throws IOException {
         this.reader = Controller.LuceneController.getIndex();
@@ -37,6 +40,14 @@ public class IndexSearch {
     public void search() {
         this.scoreDoc = this.collector.topDocs().scoreDocs;
         this.printSearchResults();
+    }
+
+    public ArrayList<LuceneResult> getResults() {
+        return this.results;
+    }
+
+    public void sortResults() {
+        Collections.sort(this.results);
     }
 
     private void printSearchResults() {
