@@ -31,10 +31,14 @@ public class JSPMain {
 
     public String[] getResults() {
         List<String> r = new ArrayList<String>();
-        for(LuceneResult lr : results) {
-            r.add(lr.getHtml());
+        if(results.size() > 0) {
+            for(LuceneResult lr : results) {
+                r.add(lr.getHtml());
+            }
+            return r.toArray(new String[r.size()]);
+        } else {
+            return new String[]{"No Results found"};
         }
-        return r.toArray(new String[r.size()]);
     }
 
     public double getSearchTime() {return this.controller.getSearchTime();}

@@ -6,6 +6,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.*;
 import org.apache.lucene.search.*;
+import org.apache.lucene.search.spans.SpanNearQuery;
 import org.apache.lucene.search.spans.SpanQuery;
 import org.apache.lucene.search.spans.SpanTermQuery;
 import org.apache.lucene.search.spans.Spans;
@@ -46,7 +47,17 @@ public class SpanSearch {
     public void setQuery(String queryString, ArrayList<String> fields) {
         Log.d(TAG, queryString, 1);
         this.results.clear();
-        this.query = new SpanTermQuery(new Term("body", queryString));
+        String[] qs = new String[] {};
+        qs = queryString.split(" ");
+        SpanQuery[] terms = new SpanQuery[qs.length];
+        int x = 0;
+        for(String s : qs) {
+            terms[x] = new SpanTermQuery(new Term("body", s));
+            x++;
+        }
+
+        //this.query = new SpanTermQuery(new Term("body", queryString));
+        this.query = new SpanNearQuery(terms, 5, true);
     }
 
     public void search() throws IOException{

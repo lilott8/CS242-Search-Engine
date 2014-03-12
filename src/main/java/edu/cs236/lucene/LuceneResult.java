@@ -110,10 +110,39 @@ public class LuceneResult implements Comparable<LuceneResult> {
         // Form the snippet
         sb.append("<span class=\"snippet\" id=\"snippet-").append(this.docId).append("\">\n");
         while(x < Controller.LuceneController.snippetSize) {
-            sb.append("...").append(this.snippetArray.get(r.nextInt(high-low)+low));
+            sb.append("...").append(this.snippetArray.get(r.nextInt((high-low)+low)));
             x++;
         }
         sb.append("</span>\n");
+        sb.append("<span class=\"result-rank\" id=\"rank-").append(this.docId).append("\">\n");
+        sb.append("Ranked at: ").append(this.score).append("</span>\n");
+
+        sb.append("</div>");
+        this.html = sb.toString();
+    }
+
+    public void formatResultsHTML(boolean snippet) {
+        Random r = new Random();
+        int x = 0;
+        int low = 0;
+        int high = this.snippetArray.size();
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("<div class=\"result-row\" id=\"row-").append(this.docId).append("\">\n");
+        // form the url
+        sb.append("<span class=\"result-url\" id=\"url-").append(this.docId).append("\">\n");
+        sb.append("<a href=\"").append(this.url).append("\" title=\"title\">");
+        sb.append(this.url).append("</a>\n");
+        sb.append("</span>\n");
+        // Form the snippet
+        if(snippet){
+            sb.append("<span class=\"snippet\" id=\"snippet-").append(this.docId).append("\">\n");
+            while(x < Controller.LuceneController.snippetSize) {
+                sb.append("...").append(this.snippetArray.get(r.nextInt((high-low)+low)));
+                x++;
+            }
+            sb.append("</span>\n");
+        }
         sb.append("<span class=\"result-rank\" id=\"rank-").append(this.docId).append("\">\n");
         sb.append("Ranked at: ").append(this.score).append("</span>\n");
 

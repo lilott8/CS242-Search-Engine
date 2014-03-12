@@ -17,6 +17,7 @@ import java.util.Collections;
  */
 public class IndexSearch {
 
+    public String TAG = "indexsearch";
     private Query query;
     private TopScoreDocCollector collector;
     protected Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_40, StandardAnalyzer.STOP_WORDS_SET);
@@ -33,13 +34,30 @@ public class IndexSearch {
     }
 
     public void setQuery(String query, ArrayList<String> fields) throws IOException, ParseException {
+        Log.d(TAG, query, 1);
+        this.results.clear();
         this.query = new QueryParser(Version.LUCENE_40, "body", this.analyzer).parse(query);
         this.searcher.search(this.query, this.collector);
     }
 
-    public void search() {
+    public void search() throws Exception{
         this.scoreDoc = this.collector.topDocs().scoreDocs;
+        int x = 0;
+        for(ScoreDoc s : this.scoreDoc) {
+            this.results.add(new LuceneResult(s.doc, s.score));
+            this.loadQueryResults(x, s.doc);
+            x++;
+        }
+        this.sortResults();
         this.printSearchResults();
+    }
+
+    public void loadQueryResults(int locInArray, int docId) throws Exception {
+        String url = this.reader.document(docId).get("url");
+        this.results.get(locInArray).setUrl(url);
+        this.results.get(locInArray).setTerms(this.reader.getTermVector(docId, "body"));
+        this.results.get(locInArray).formatResultsHTML(false);
+        //this.generateSnippets(locInArray);
     }
 
     public ArrayList<LuceneResult> getResults() {

@@ -32,7 +32,7 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         HashMap<String, String> arguments = parseArgs(args);
-        Controller controller = new Controller(arguments, true, true);
+        Controller controller = new Controller(arguments);
 
         String input;
         String query = "";
@@ -53,7 +53,12 @@ public class Main {
                 controller.createSearcher();
                 // example: search jason rocks -body
                 if(eval.size() > 1) {
-                    controller.query(eval.remove(0), eval);
+                    String q = "";
+                    for(String s : eval) {
+                        q += s + " ";
+                    }
+                    //controller.query(eval.remove(0), eval);
+                    controller.query(q, new ArrayList<String>());
                 } else {
                     eval.addAll(new ArrayList<String>(Arrays.asList("body", "title", "url")));
                     controller.query(eval.remove(0), eval);
@@ -78,12 +83,12 @@ public class Main {
         } while(acceptInput);
 
         try {
-        controller.closeSearcher();
+            controller.closeSearcher();
         } catch(Exception e) {
             Log.d("main", "error closing searcher", 1);
         }
         try {
-        controller.closeIndexer();
+            controller.closeIndexer();
         } catch(Exception e) {
             Log.d("main", "error closing indexer", 1);
         }
