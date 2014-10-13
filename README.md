@@ -1,4 +1,4 @@
-Lucene
+CS242 Information Search & Retrieval
 ======
 
 Lucene based search engine
